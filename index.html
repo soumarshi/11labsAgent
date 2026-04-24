@@ -36,14 +36,11 @@
             <section class="info-section">
                 <h2>How It Works</h2>
                 <ol>
-                    <li>Click the chat widget in the bottom right corner</li>
-                    <li>Start typing or speaking to the AI agent</li>
+                    <li>The agent automatically activates when the page loads</li>
+                    <li>Start speaking to the AI agent immediately</li>
                     <li>Get instant responses and assistance</li>
                     <li>Enjoy natural conversation flow</li>
                 </ol>
-                <div class="button-section" style="margin-top: 20px;">
-                    <button id="activateAgent" class="activate-btn">🎤 Activate Agent</button>
-                </div>
             </section>
         </main>
 
@@ -57,64 +54,64 @@
     <script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
     
     <script>
-        // Ensure ConvAI widget is properly initialized
-        function initializeConvAI() {
-            console.log('Initializing 11Labs ConvAI widget...');
+        // Auto-activate ConvAI widget on page load
+        function initializeAndActivateConvAI() {
+            console.log('Initializing and auto-activating 11Labs ConvAI widget...');
             
-            // Wait for the widget script to load
-            const checkWidget = setInterval(() => {
+            let attempts = 0;
+            const maxAttempts = 20;
+            
+            const activateWidget = setInterval(() => {
+                attempts++;
                 const widget = document.querySelector('elevenlabs-convai');
-                if (widget && window.ElevenLabsConvAI) {
-                    console.log('✓ ConvAI widget detected and ready');
-                    clearInterval(checkWidget);
+                
+                if (widget) {
+                    console.log('✓ ConvAI widget found, activating...');
                     
-                    // Trigger widget activation
                     try {
-                        widget.dispatchEvent(new Event('load', { bubbles: true }));
+                        // Method 1: Click the widget
+                        widget.click?.();
+                        
+                        // Method 2: Dispatch events
+                        widget.dispatchEvent(new Event('click', { bubbles: true }));
+                        widget.dispatchEvent(new Event('mousedown', { bubbles: true }));
+                        widget.dispatchEvent(new Event('mouseup', { bubbles: true }));
+                        widget.dispatchEvent(new Event('touchstart', { bubbles: true }));
+                        
+                        // Method 3: Focus
+                        widget.focus?.();
+                        
+                        // Method 4: Custom activation
+                        if (window.ElevenLabsConvAI) {
+                            console.log('✓ ElevenLabsConvAI API detected');
+                            window.ElevenLabsConvAI.startSession?.();
+                        }
+                        
+                        console.log('✓ Agent activated on page load');
+                        clearInterval(activateWidget);
                     } catch (e) {
-                        console.warn('Widget activation note:', e.message);
+                        console.warn('Activation attempt:', e.message);
                     }
+                } else if (attempts >= maxAttempts) {
+                    console.warn('Widget not found after 10 seconds');
+                    clearInterval(activateWidget);
+                } else {
+                    console.log(`Waiting for widget... (attempt ${attempts})`);
                 }
             }, 500);
-            
-            // Timeout after 10 seconds
-            setTimeout(() => clearInterval(checkWidget), 10000);
         }
         
-        // Add button click handler
-        function setupActivationButton() {
-            const btn = document.getElementById('activateAgent');
-            if (btn) {
-                btn.addEventListener('click', () => {
-                    console.log('Agent activation button clicked');
-                    const widget = document.querySelector('elevenlabs-convai');
-                    if (widget) {
-                        // Try multiple methods to activate the widget
-                        widget.click?.();
-                        widget.focus?.();
-                        widget.dispatchEvent(new Event('click', { bubbles: true }));
-                        widget.dispatchEvent(new Event('focus', { bubbles: true }));
-                        console.log('✓ Activation command sent to widget');
-                    }
-                });
-            }
-        }
-        
-        // Initialize on page load
+        // Trigger on page ready
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => {
-                initializeConvAI();
-                setupActivationButton();
-            });
+            document.addEventListener('DOMContentLoaded', initializeAndActivateConvAI);
         } else {
-            initializeConvAI();
-            setupActivationButton();
+            initializeAndActivateConvAI();
         }
         
-        // Also try initializing when the external script loads
+        // Also trigger when external scripts load
         window.addEventListener('load', () => {
-            console.log('Page fully loaded - ConvAI should be active');
-            setupActivationButton();
+            console.log('✓ Page fully loaded, ensuring agent is active');
+            setTimeout(initializeAndActivateConvAI, 500);
         });
     </script>
 </body>
