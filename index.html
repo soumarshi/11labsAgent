@@ -20,7 +20,17 @@
     <script>
         // Get WebSocket URL from query parameter
         const params = new URLSearchParams(window.location.search);
-        const RELAY_SERVER_URL = params.get("wss") || `ws://${window.location.hostname}:3000`;
+        let RELAY_SERVER_URL = params.get("wss");
+
+        // Default to localhost when running locally.
+        // On GitHub Pages, use the active ngrok tunnel.
+        if (!RELAY_SERVER_URL) {
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                RELAY_SERVER_URL = `ws://localhost:3000`;
+            } else {
+                RELAY_SERVER_URL = `wss://helpless-epilepsy-routine.ngrok-free.dev`;
+            }
+        }
 
         const statusDot = document.getElementById('statusDot');
         const statusLabel = document.getElementById('statusLabel');
