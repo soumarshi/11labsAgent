@@ -52,5 +52,43 @@
     <!-- 11Labs ConvAI Widget -->
     <elevenlabs-convai agent-id="agent_4101kne33jyvef3rjxyfhd1kyyp0"></elevenlabs-convai>
     <script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
+    
+    <script>
+        // Ensure ConvAI widget is properly initialized
+        function initializeConvAI() {
+            console.log('Initializing 11Labs ConvAI widget...');
+            
+            // Wait for the widget script to load
+            const checkWidget = setInterval(() => {
+                const widget = document.querySelector('elevenlabs-convai');
+                if (widget && window.ElevenLabsConvAI) {
+                    console.log('✓ ConvAI widget detected and ready');
+                    clearInterval(checkWidget);
+                    
+                    // Trigger widget activation
+                    try {
+                        widget.dispatchEvent(new Event('load', { bubbles: true }));
+                    } catch (e) {
+                        console.warn('Widget activation note:', e.message);
+                    }
+                }
+            }, 500);
+            
+            // Timeout after 10 seconds
+            setTimeout(() => clearInterval(checkWidget), 10000);
+        }
+        
+        // Initialize on page load
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeConvAI);
+        } else {
+            initializeConvAI();
+        }
+        
+        // Also try initializing when the external script loads
+        window.addEventListener('load', () => {
+            console.log('Page fully loaded - ConvAI should be active');
+        });
+    </script>
 </body>
 </html>
