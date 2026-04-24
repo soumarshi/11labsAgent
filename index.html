@@ -41,6 +41,9 @@
                     <li>Get instant responses and assistance</li>
                     <li>Enjoy natural conversation flow</li>
                 </ol>
+                <div class="button-section" style="margin-top: 20px;">
+                    <button id="activateAgent" class="activate-btn">🎤 Activate Agent</button>
+                </div>
             </section>
         </main>
 
@@ -78,16 +81,40 @@
             setTimeout(() => clearInterval(checkWidget), 10000);
         }
         
+        // Add button click handler
+        function setupActivationButton() {
+            const btn = document.getElementById('activateAgent');
+            if (btn) {
+                btn.addEventListener('click', () => {
+                    console.log('Agent activation button clicked');
+                    const widget = document.querySelector('elevenlabs-convai');
+                    if (widget) {
+                        // Try multiple methods to activate the widget
+                        widget.click?.();
+                        widget.focus?.();
+                        widget.dispatchEvent(new Event('click', { bubbles: true }));
+                        widget.dispatchEvent(new Event('focus', { bubbles: true }));
+                        console.log('✓ Activation command sent to widget');
+                    }
+                });
+            }
+        }
+        
         // Initialize on page load
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initializeConvAI);
+            document.addEventListener('DOMContentLoaded', () => {
+                initializeConvAI();
+                setupActivationButton();
+            });
         } else {
             initializeConvAI();
+            setupActivationButton();
         }
         
         // Also try initializing when the external script loads
         window.addEventListener('load', () => {
             console.log('Page fully loaded - ConvAI should be active');
+            setupActivationButton();
         });
     </script>
 </body>
