@@ -11,7 +11,7 @@ A modern web application featuring real-time voice conversations using 11Labs' C
 
 ## Prerequisites
 
-- Python 3.8+
+- Node.js 14+ and npm
 - 11Labs API Key (with ConvAI agent created)
 - Ngrok (for exposing local server to internet)
 - Recall.ai API Key
@@ -22,9 +22,7 @@ A modern web application featuring real-time voice conversations using 11Labs' C
 
 ```bash
 cd /home/soumarshinagbiswas/11labsAgent
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-pip install -r requirements.txt
+npm install
 ```
 
 ### 2. Configure Environment
@@ -41,7 +39,7 @@ Get your 11Labs API key from: https://elevenlabs.io/app/settings/api-keys
 ### 3. Start Server Locally
 
 ```bash
-python server.py
+npm start
 ```
 
 Server will run on `ws://localhost:3000`
@@ -151,7 +149,7 @@ PORT=3000                          # WebSocket server port (default: 3000)
 - Check browser console for connection errors (F12 → Console)
 
 ### Connection refused
-- Start the backend server: `python server.py`
+- Start the backend server: `npm start`
 - Expose with ngrok: `ngrok http 3000`
 - Pass correct `wss` parameter to frontend
 
@@ -167,8 +165,8 @@ PORT=3000                          # WebSocket server port (default: 3000)
 11labsAgent/
 ├── index.html          # Frontend client
 ├── styles.css          # UI styling
-├── server.py           # WebSocket relay server (11Labs)
-├── requirements.txt    # Python dependencies
+├── server.js           # WebSocket relay server (Node.js)
+├── package.json        # Node.js dependencies
 ├── .env.example        # Environment template
 ├── .env                # Local environment (not in git)
 ├── .gitignore          # Git ignore rules
