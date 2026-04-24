@@ -16,11 +16,11 @@
         <main class="main-content">
             <section class="intro-section">
                 <h2>Welcome to Your AI Assistant</h2>
-                <p>Start a conversation with our AI agent by clicking the chat button in the bottom right corner.</p>
+                <p>The agent automatically starts talking when this page loads. Just listen for the greeting!</p>
                 <div class="features">
                     <div class="feature-card">
-                        <h3>🚀 Fast</h3>
-                        <p>Real-time conversational AI</p>
+                        <h3>🚀 Auto-Start</h3>
+                        <p>Talks instantly on page load</p>
                     </div>
                     <div class="feature-card">
                         <h3>🎙️ Voice Enabled</h3>
@@ -54,65 +54,124 @@
     <script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
     
     <script>
-        // Auto-activate ConvAI widget on page load
-        function initializeAndActivateConvAI() {
-            console.log('Initializing and auto-activating 11Labs ConvAI widget...');
+        // Auto-activate ConvAI widget and START TALKING on page load
+        function initializeAndStartVoice() {
+            console.log('🎙️ Initializing 11Labs ConvAI with auto-voice start...');
             
             let attempts = 0;
-            const maxAttempts = 20;
+            const maxAttempts = 30; // Increase attempts
             
-            const activateWidget = setInterval(() => {
+            const activateAndSpeak = setInterval(() => {
                 attempts++;
                 const widget = document.querySelector('elevenlabs-convai');
                 
                 if (widget) {
-                    console.log('✓ ConvAI widget found, activating...');
+                    console.log('✓ ConvAI widget found - activating voice');
                     
                     try {
-                        // Method 1: Click the widget
+                        // Method 1: Click to activate
                         widget.click?.();
                         
-                        // Method 2: Dispatch events
-                        widget.dispatchEvent(new Event('click', { bubbles: true }));
-                        widget.dispatchEvent(new Event('mousedown', { bubbles: true }));
-                        widget.dispatchEvent(new Event('mouseup', { bubbles: true }));
-                        widget.dispatchEvent(new Event('touchstart', { bubbles: true }));
+                        // Method 2: Dispatch native events
+                        const events = [
+                            new MouseEvent('click', { bubbles: true, cancelable: true, view: window }),
+                            new MouseEvent('mousedown', { bubbles: true }),
+                            new MouseEvent('mouseup', { bubbles: true }),
+                            new TouchEvent('touchstart', { bubbles: true }),
+                            new TouchEvent('touchend', { bubbles: true }),
+                            new Event('focus', { bubbles: true }),
+                            new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })
+                        ];
                         
-                        // Method 3: Focus
-                        widget.focus?.();
+                        events.forEach(event => widget.dispatchEvent(event));
                         
-                        // Method 4: Custom activation
-                        if (window.ElevenLabsConvAI) {
-                            console.log('✓ ElevenLabsConvAI API detected');
-                            window.ElevenLabsConvAI.startSession?.();
+                        // Method 3: Try accessing the widget's internal API
+                        if (widget._widget || widget.widget) {
+                            console.log('✓ Widget internal API detected');
+                            widget._widget?.start?.();
+                            widget.widget?.start?.();
+                            widget._widget?.speak?.();
+                            widget.widget?.speak?.();
+                            widget._widget?.startListening?.();
+                            widget.widget?.startListening?.();
                         }
                         
-                        console.log('✓ Agent activated on page load');
-                        clearInterval(activateWidget);
+                        // Method 4: Try ElevenLabsConvAI global API
+                        if (window.ElevenLabsConvAI) {
+                            console.log('✓ ElevenLabsConvAI API found');
+                            window.ElevenLabsConvAI.startSession?.();
+                            window.ElevenLabsConvAI.start?.();
+                            window.ElevenLabsConvAI.toggleSession?.();
+                            window.ElevenLabsConvAI.startListening?.();
+                        }
+                        
+                        // Method 5: Set class to active
+                        widget.classList.add('active', 'opened', 'talking');
+                        widget.setAttribute('data-active', 'true');
+                        widget.setAttribute('data-listening', 'true');
+                        
+                        // Method 6: Try shadow DOM access
+                        try {
+                            const shadowRoot = widget.shadowRoot;
+                            if (shadowRoot) {
+                                const micButton = shadowRoot.querySelector('button[aria-label*="mic"], button[aria-label*="Mic"], [role="button"]');
+                                if (micButton) {
+                                    console.log('✓ Found mic button in shadow DOM');
+                                    micButton.click?.();
+                                }
+                            }
+                        } catch (e) {
+                            console.log('Shadow DOM access:', e.message);
+                        }
+                        
+                        console.log('✓✓✓ Agent activated - voice should start now');
+                        
+                        // Continue trying for a few more iterations to ensure it sticks
+                        if (attempts > 3) {
+                            clearInterval(activateAndSpeak);
+                        }
                     } catch (e) {
-                        console.warn('Activation attempt:', e.message);
+                        console.warn('Activation attempt error:', e.message);
                     }
                 } else if (attempts >= maxAttempts) {
-                    console.warn('Widget not found after 10 seconds');
-                    clearInterval(activateWidget);
+                    console.warn('⚠️ Widget not found after multiple attempts');
+                    clearInterval(activateAndSpeak);
                 } else {
-                    console.log(`Waiting for widget... (attempt ${attempts})`);
+                    if (attempts % 5 === 0) {
+                        console.log(`⏳ Waiting for widget... (attempt ${attempts}/${maxAttempts})`);
+                    }
                 }
-            }, 500);
+            }, 300); // Faster polling
         }
         
-        // Trigger on page ready
+        // Trigger immediately on DOM ready
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initializeAndActivateConvAI);
+            document.addEventListener('DOMContentLoaded', () => {
+                console.log('DOM ready - starting initialization');
+                initializeAndStartVoice();
+            });
         } else {
-            initializeAndActivateConvAI();
+            console.log('DOM already loaded - starting initialization');
+            initializeAndStartVoice();
         }
         
-        // Also trigger when external scripts load
+        // Trigger again when all scripts load
         window.addEventListener('load', () => {
-            console.log('✓ Page fully loaded, ensuring agent is active');
-            setTimeout(initializeAndActivateConvAI, 500);
+            console.log('✓ All resources loaded');
+            setTimeout(() => {
+                console.log('Ensuring voice is active...');
+                initializeAndStartVoice();
+            }, 1000);
         });
+        
+        // Auto-retry every 5 seconds in case widget wasn't ready
+        setInterval(() => {
+            const widget = document.querySelector('elevenlabs-convai');
+            if (widget && !widget.classList.contains('active')) {
+                console.log('Widget found but not active - re-activating...');
+                initializeAndStartVoice();
+            }
+        }, 5000);
     </script>
 </body>
 </html>
