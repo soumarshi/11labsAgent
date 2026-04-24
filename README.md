@@ -1,17 +1,18 @@
-# Real-Time AI Voice Agent - Recall.ai Integration
+# Real-Time 11Labs Voice Agent - Recall.ai Integration
 
-A modern web application featuring real-time voice conversations using OpenAI's Real-time API, integrated with Recall.ai for meeting participation.
+A modern web application featuring real-time voice conversations using 11Labs' ConvAI Agent, integrated with Recall.ai for meeting participation.
 
 ## Architecture
 
-- **Backend**: Python WebSocket server that relays messages between the browser and OpenAI's Real-time API
+- **Backend**: Python WebSocket server that relays messages between the browser and 11Labs ConvAI API
 - **Frontend**: HTML/JavaScript client that handles audio I/O and WebSocket communication
 - **Integration**: Works with Recall.ai's Output Media feature for meeting participation
+- **Voice Agent**: 11Labs ConvAI AI voice agent with natural conversations
 
 ## Prerequisites
 
 - Python 3.8+
-- OpenAI API Key (with credits)
+- 11Labs API Key (with ConvAI agent created)
 - Ngrok (for exposing local server to internet)
 - Recall.ai API Key
 
@@ -28,12 +29,14 @@ pip install -r requirements.txt
 
 ### 2. Configure Environment
 
-Copy `.env.example` to `.env` and add your OpenAI API key:
+Copy `.env.example` to `.env` and add your 11Labs API key:
 
 ```bash
 cp .env.example .env
-# Edit .env and add your OPENAI_API_KEY
+# Edit .env and add your ELEVENLABS_API_KEY
 ```
+
+Get your 11Labs API key from: https://elevenlabs.io/app/settings/api-keys
 
 ### 3. Start Server Locally
 
@@ -69,7 +72,7 @@ This will give you a URL like: `wss://xxxx-xx-xxxx-xxx.ngrok-free.app`
 
 ```bash
 git add .
-git commit -m "Add real-time AI agent with backend server"
+git commit -m "Add 11Labs ConvAI agent with Recall.ai integration"
 git push origin main
 ```
 
@@ -81,7 +84,13 @@ git push origin main
 
 ## Use with Recall.ai
 
-### 1. Create a Bot in Recall.ai
+### 1. Create 11Labs Agent
+
+1. Go to https://elevenlabs.io/app/conversational-ai/agents
+2. Create a new agent or use existing one
+3. Note the agent ID (e.g., `agent_4101kne33jyvef3rjxyfhd1kyyp0`)
+
+### 2. Create a Bot in Recall.ai
 
 Replace placeholders and run:
 
@@ -93,7 +102,7 @@ curl --request POST \
   --header 'content-type: application/json' \
   --data '{
     "meeting_url": "https://meet.google.com/YOUR_MEETING_URL",
-    "bot_name": "AI Agent",
+    "bot_name": "11Labs AI Agent",
     "output_media": {
       "camera": {
         "kind": "webpage",
@@ -120,22 +129,23 @@ curl --request POST \
 
 1. **Browser connects** to the backend via WebSocket
 2. **Audio input**: Browser captures microphone and sends to backend
-3. **Backend relays** to OpenAI's Real-time API
-4. **OpenAI responds** with audio and text
+3. **Backend relays** to 11Labs ConvAI API
+4. **11Labs responds** with audio from the AI voice agent
 5. **Backend relays** back to browser
 6. **Browser plays** audio response
 
 ## Environment Variables
 
 ```
-OPENAI_API_KEY=sk-...          # Your OpenAI API key
-PORT=3000                       # WebSocket server port (default: 3000)
+ELEVENLABS_API_KEY=xi_...         # Your 11Labs API key
+ELEVENLABS_AGENT_ID=agent_...    # Your ConvAI agent ID (optional, defaults to included agent)
+PORT=3000                          # WebSocket server port (default: 3000)
 ```
 
 ## Troubleshooting
 
 ### Bot doesn't speak in meeting
-- Ensure OpenAI account has credits
+- Ensure 11Labs agent is active and configured properly
 - Check that server is running (`python server.py`)
 - Verify ngrok URL is correct in Recall.ai bot config
 - Check browser console for connection errors (F12 → Console)
@@ -149,6 +159,7 @@ PORT=3000                       # WebSocket server port (default: 3000)
 - Check microphone permissions
 - Ensure audio context is not suspended
 - Check browser console for audio errors
+- Verify 11Labs agent is online
 
 ## File Structure
 
@@ -156,7 +167,7 @@ PORT=3000                       # WebSocket server port (default: 3000)
 11labsAgent/
 ├── index.html          # Frontend client
 ├── styles.css          # UI styling
-├── server.py           # WebSocket relay server
+├── server.py           # WebSocket relay server (11Labs)
 ├── requirements.txt    # Python dependencies
 ├── .env.example        # Environment template
 ├── .env                # Local environment (not in git)
@@ -167,10 +178,10 @@ PORT=3000                       # WebSocket server port (default: 3000)
 ## API Flow
 
 ```
-Browser ←→ WebSocket Server ←→ OpenAI Real-time API
+Browser ←→ WebSocket Server ←→ 11Labs ConvAI API
   ↓            ↓
 Audio I/O   Relay              ↓
-            Messages         GPT-4 Realtime
+            Messages         AI Voice Agent
 ```
 
 ## Security Notes
@@ -182,7 +193,8 @@ Audio I/O   Relay              ↓
 
 ## References
 
-- [OpenAI Real-time API Docs](https://platform.openai.com/docs/guides/realtime)
+- [11Labs API Documentation](https://elevenlabs.io/docs)
+- [11Labs ConvAI Agents](https://elevenlabs.io/app/conversational-ai/agents)
 - [Recall.ai Documentation](https://docs.recall.ai/)
 - [WebSocket Protocol](https://tools.ietf.org/html/rfc6455)
 
@@ -192,5 +204,4 @@ MIT License - See LICENSE file for details
 
 ---
 
-**Created**: April 2026 | **Updated**: April 2026
-
+**Created**: April 2026 | **Updated**: April 2026 | **Powered by 11Labs ConvAI**
