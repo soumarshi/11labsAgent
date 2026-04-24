@@ -3,175 +3,239 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>11Labs AI Agent - ConvAI</title>
+    <title>Real-Time AI Agent</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <header class="header">
-            <h1>🤖 AI Conversational Agent</h1>
-            <p>Powered by 11Labs ConvAI</p>
-        </header>
-
-        <main class="main-content">
-            <section class="intro-section">
-                <h2>Welcome to Your AI Assistant</h2>
-                <p>The agent automatically starts talking when this page loads. Just listen for the greeting!</p>
-                <div class="features">
-                    <div class="feature-card">
-                        <h3>🚀 Auto-Start</h3>
-                        <p>Talks instantly on page load</p>
-                    </div>
-                    <div class="feature-card">
-                        <h3>🎙️ Voice Enabled</h3>
-                        <p>Natural speech interaction</p>
-                    </div>
-                    <div class="feature-card">
-                        <h3>🧠 Intelligent</h3>
-                        <p>Advanced AI responses</p>
-                    </div>
-                </div>
-            </section>
-
-            <section class="info-section">
-                <h2>How It Works</h2>
-                <ol>
-                    <li>The agent automatically activates when the page loads</li>
-                    <li>Start speaking to the AI agent immediately</li>
-                    <li>Get instant responses and assistance</li>
-                    <li>Enjoy natural conversation flow</li>
-                </ol>
-            </section>
-        </main>
-
-        <footer class="footer">
-            <p>&copy; 2026 11Labs AI Agent. Powered by <a href="https://elevenlabs.io" target="_blank">ElevenLabs</a></p>
-        </footer>
+    <div class="app-container">
+        <div class="status-indicator">
+            <div class="status-dot disconnected" id="statusDot"></div>
+            <div class="status-text">
+                <div class="status-label" id="statusLabel">Connecting to:</div>
+                <div class="status-url" id="statusUrl">Loading...</div>
+            </div>
+        </div>
     </div>
 
-    <!-- 11Labs ConvAI Widget -->
-    <elevenlabs-convai agent-id="agent_4101kne33jyvef3rjxyfhd1kyyp0"></elevenlabs-convai>
-    <script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
-    
     <script>
-        // Auto-activate ConvAI widget and START TALKING on page load
-        function initializeAndStartVoice() {
-            console.log('🎙️ Initializing 11Labs ConvAI with auto-voice start...');
-            
-            let attempts = 0;
-            const maxAttempts = 30; // Increase attempts
-            
-            const activateAndSpeak = setInterval(() => {
-                attempts++;
-                const widget = document.querySelector('elevenlabs-convai');
-                
-                if (widget) {
-                    console.log('✓ ConvAI widget found - activating voice');
-                    
-                    try {
-                        // Method 1: Click to activate
-                        widget.click?.();
-                        
-                        // Method 2: Dispatch native events
-                        const events = [
-                            new MouseEvent('click', { bubbles: true, cancelable: true, view: window }),
-                            new MouseEvent('mousedown', { bubbles: true }),
-                            new MouseEvent('mouseup', { bubbles: true }),
-                            new TouchEvent('touchstart', { bubbles: true }),
-                            new TouchEvent('touchend', { bubbles: true }),
-                            new Event('focus', { bubbles: true }),
-                            new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })
-                        ];
-                        
-                        events.forEach(event => widget.dispatchEvent(event));
-                        
-                        // Method 3: Try accessing the widget's internal API
-                        if (widget._widget || widget.widget) {
-                            console.log('✓ Widget internal API detected');
-                            widget._widget?.start?.();
-                            widget.widget?.start?.();
-                            widget._widget?.speak?.();
-                            widget.widget?.speak?.();
-                            widget._widget?.startListening?.();
-                            widget.widget?.startListening?.();
-                        }
-                        
-                        // Method 4: Try ElevenLabsConvAI global API
-                        if (window.ElevenLabsConvAI) {
-                            console.log('✓ ElevenLabsConvAI API found');
-                            window.ElevenLabsConvAI.startSession?.();
-                            window.ElevenLabsConvAI.start?.();
-                            window.ElevenLabsConvAI.toggleSession?.();
-                            window.ElevenLabsConvAI.startListening?.();
-                        }
-                        
-                        // Method 5: Set class to active
-                        widget.classList.add('active', 'opened', 'talking');
-                        widget.setAttribute('data-active', 'true');
-                        widget.setAttribute('data-listening', 'true');
-                        
-                        // Method 6: Try shadow DOM access
-                        try {
-                            const shadowRoot = widget.shadowRoot;
-                            if (shadowRoot) {
-                                const micButton = shadowRoot.querySelector('button[aria-label*="mic"], button[aria-label*="Mic"], [role="button"]');
-                                if (micButton) {
-                                    console.log('✓ Found mic button in shadow DOM');
-                                    micButton.click?.();
-                                }
-                            }
-                        } catch (e) {
-                            console.log('Shadow DOM access:', e.message);
-                        }
-                        
-                        console.log('✓✓✓ Agent activated - voice should start now');
-                        
-                        // Continue trying for a few more iterations to ensure it sticks
-                        if (attempts > 3) {
-                            clearInterval(activateAndSpeak);
-                        }
-                    } catch (e) {
-                        console.warn('Activation attempt error:', e.message);
-                    }
-                } else if (attempts >= maxAttempts) {
-                    console.warn('⚠️ Widget not found after multiple attempts');
-                    clearInterval(activateAndSpeak);
-                } else {
-                    if (attempts % 5 === 0) {
-                        console.log(`⏳ Waiting for widget... (attempt ${attempts}/${maxAttempts})`);
-                    }
-                }
-            }, 300); // Faster polling
-        }
-        
-        // Trigger immediately on DOM ready
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => {
-                console.log('DOM ready - starting initialization');
-                initializeAndStartVoice();
-            });
-        } else {
-            console.log('DOM already loaded - starting initialization');
-            initializeAndStartVoice();
-        }
-        
-        // Trigger again when all scripts load
-        window.addEventListener('load', () => {
-            console.log('✓ All resources loaded');
-            setTimeout(() => {
-                console.log('Ensuring voice is active...');
-                initializeAndStartVoice();
-            }, 1000);
-        });
-        
-        // Auto-retry every 5 seconds in case widget wasn't ready
-        setInterval(() => {
-            const widget = document.querySelector('elevenlabs-convai');
-            if (widget && !widget.classList.contains('active')) {
-                console.log('Widget found but not active - re-activating...');
-                initializeAndStartVoice();
+        // Get WebSocket URL from query parameter
+        const params = new URLSearchParams(window.location.search);
+        const RELAY_SERVER_URL = params.get("wss") || `ws://${window.location.hostname}:3000`;
+
+        const statusDot = document.getElementById('statusDot');
+        const statusLabel = document.getElementById('statusLabel');
+        const statusUrl = document.getElementById('statusUrl');
+
+        statusUrl.textContent = RELAY_SERVER_URL;
+
+        class AudioProcessor {
+            constructor() {
+                this.audioContext = null;
+                this.mediaStream = null;
+                this.workletNode = null;
+                this.analyser = null;
             }
-        }, 5000);
+
+            async initialize() {
+                try {
+                    this.audioContext = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 24000 });
+                    if (this.audioContext.state === 'suspended') {
+                        await this.audioContext.resume();
+                    }
+
+                    this.mediaStream = await navigator.mediaDevices.getUserMedia({
+                        audio: {
+                            echoCancellation: true,
+                            noiseSuppression: true,
+                            autoGainControl: false,
+                        }
+                    });
+
+                    const source = this.audioContext.createMediaStreamSource(this.mediaStream);
+                    
+                    // Create script processor for audio data
+                    this.workletNode = this.audioContext.createScriptProcessor(4096, 1, 1);
+                    
+                    source.connect(this.workletNode);
+                    this.workletNode.connect(this.audioContext.destination);
+
+                    return true;
+                } catch (error) {
+                    console.error('Audio initialization failed:', error);
+                    throw error;
+                }
+            }
+
+            onAudioData(callback) {
+                if (this.workletNode) {
+                    this.workletNode.onaudioprocess = (event) => {
+                        const float32Data = event.inputBuffer.getChannelData(0);
+                        callback(float32Data);
+                    };
+                }
+            }
+
+            playAudio(audioData) {
+                if (!this.audioContext) return;
+                
+                const buffer = this.audioContext.createBuffer(1, audioData.length, 24000);
+                const channelData = buffer.getChannelData(0);
+                channelData.set(audioData);
+                
+                const source = this.audioContext.createBufferSource();
+                source.buffer = buffer;
+                source.connect(this.audioContext.destination);
+                source.start();
+            }
+
+            stop() {
+                if (this.mediaStream) {
+                    this.mediaStream.getTracks().forEach(track => track.stop());
+                }
+                if (this.workletNode) {
+                    this.workletNode.disconnect();
+                }
+            }
+        }
+
+        class RealtimeAgent {
+            constructor(serverUrl) {
+                this.serverUrl = serverUrl;
+                this.ws = null;
+                this.audioProcessor = new AudioProcessor();
+                this.connected = false;
+                this.audioBuffer = [];
+            }
+
+            async connect() {
+                return new Promise((resolve, reject) => {
+                    try {
+                        this.ws = new WebSocket(this.serverUrl, 'realtime');
+
+                        this.ws.onopen = async () => {
+                            console.log('✓ Connected to server');
+                            statusDot.className = 'status-dot connected';
+                            statusLabel.textContent = 'Connected to:';
+                            
+                            try {
+                                await this.audioProcessor.initialize();
+                                this.connected = true;
+
+                                // Start sending audio data
+                                this.audioProcessor.onAudioData((float32Data) => {
+                                    const int16Data = this.float32ToInt16(float32Data);
+                                    const base64Audio = this.arrayBufferToBase64(int16Data);
+                                    
+                                    this.ws.send(JSON.stringify({
+                                        type: 'input_audio_buffer.append',
+                                        audio: base64Audio
+                                    }));
+                                });
+
+                                // Send initial message
+                                this.ws.send(JSON.stringify({
+                                    type: 'input_text',
+                                    text: 'Hello! Please introduce yourself and say how you can help.'
+                                }));
+
+                                resolve(true);
+                            } catch (error) {
+                                console.error('Audio setup failed:', error);
+                                reject(error);
+                            }
+                        };
+
+                        this.ws.onmessage = (event) => {
+                            try {
+                                const message = JSON.parse(event.data);
+                                
+                                if (message.type === 'response.audio.delta' && message.delta) {
+                                    const audioData = this.base64ToArrayBuffer(message.delta);
+                                    const float32Data = this.int16ToFloat32(audioData);
+                                    this.audioProcessor.playAudio(float32Data);
+                                }
+                            } catch (error) {
+                                console.error('Error processing message:', error);
+                            }
+                        };
+
+                        this.ws.onerror = (error) => {
+                            console.error('WebSocket error:', error);
+                            statusDot.className = 'status-dot disconnected';
+                            statusLabel.textContent = 'Error:';
+                            statusUrl.textContent = error.message || 'Connection error';
+                            reject(error);
+                        };
+
+                        this.ws.onclose = () => {
+                            console.log('Disconnected from server');
+                            statusDot.className = 'status-dot disconnected';
+                            statusLabel.textContent = 'Disconnected from:';
+                            this.connected = false;
+                            this.audioProcessor.stop();
+                        };
+                    } catch (error) {
+                        reject(error);
+                    }
+                });
+            }
+
+            float32ToInt16(float32Data) {
+                const int16Data = new Int16Array(float32Data.length);
+                for (let i = 0; i < float32Data.length; i++) {
+                    int16Data[i] = Math.max(-1, Math.min(1, float32Data[i])) * 0x7fff;
+                }
+                return int16Data;
+            }
+
+            int16ToFloat32(int16Data) {
+                const float32Data = new Float32Array(int16Data.length);
+                for (let i = 0; i < int16Data.length; i++) {
+                    float32Data[i] = int16Data[i] * (1 / 0x7fff);
+                }
+                return float32Data;
+            }
+
+            arrayBufferToBase64(buffer) {
+                let binary = '';
+                const bytes = new Uint8Array(buffer);
+                for (let i = 0; i < bytes.byteLength; i++) {
+                    binary += String.fromCharCode(bytes[i]);
+                }
+                return btoa(binary);
+            }
+
+            base64ToArrayBuffer(base64) {
+                const binary = atob(base64);
+                const bytes = new Uint8Array(binary.length);
+                for (let i = 0; i < binary.length; i++) {
+                    bytes[i] = binary.charCodeAt(i);
+                }
+                return bytes.buffer;
+            }
+
+            disconnect() {
+                if (this.ws) {
+                    this.ws.close();
+                }
+                this.audioProcessor.stop();
+            }
+        }
+
+        // Initialize agent
+        const agent = new RealtimeAgent(RELAY_SERVER_URL);
+
+        agent.connect().catch(error => {
+            console.error('Failed to connect:', error);
+            statusDot.className = 'status-dot disconnected';
+            statusLabel.textContent = 'Error:';
+            statusUrl.textContent = error.message || 'Failed to connect';
+        });
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            agent.disconnect();
+        });
     </script>
 </body>
 </html>
